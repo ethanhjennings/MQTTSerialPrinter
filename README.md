@@ -10,6 +10,8 @@ You also need an MQTT broker running somewhere on your network (like a raspberry
 
 Setup:
 ```c++
+#include <WiFi.h>
+#include <ArduinoMqttClient.h>
 #include <MQTTSerialPrinter.h>
 
 WiFiClient wifi_client;
