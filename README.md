@@ -7,6 +7,18 @@ You can download this repo as a .zip and import it into the Arduino IDE with the
 You also need an MQTT broker running somewhere on your network (like a raspberry pi). I recommend [mosquitto](https://mosquitto.org/).
 
 # Example Usage
+
+Setup:
+```c++
+#include <MQTTSerialPrinter.h>
+
+WiFiClient wifi_client;
+MqttClient mqtt_client(wifi_client);
+MQTTSerialPrinter Log(mqtt_client, "my_topic");
+
+// Serial printing now works, connect to wifi and mqtt for mqtt printing to also work. See the examples.
+```
+
 Sending single message:
 ```c++
 Log.println("Example status message.");
@@ -35,6 +47,11 @@ Log.println("This is a multi-line message!\nHere's another line!");
 There's also a formatting function based on strprintf!
 ```c++
 Log.printlnf("Example formatting with data: %d", 42);
+```
+
+If you decide you're done debugging and don't want to send excess messages over the network anymore, you can simply disable MQTT printing without affecting serial printing with:
+```c++
+Log.setMQTTEnabled(false);
 ```
 
 # Contributing and future
