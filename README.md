@@ -7,7 +7,7 @@ You can download this repo as a .zip and import it into the Arduino IDE with the
 You also need an MQTT broker running somewhere on your network (like a raspberry pi). I recommend [mosquitto](https://mosquitto.org/).
 
 # Example Usage
-Sending simple message:
+Sending single message:
 ```c++
 Log.println("Example status message.");
 ```
