@@ -1,8 +1,11 @@
+
 # MQTT and Serial Printer
-Arduino library that allows you to print to both serial and MQTT at the same time. This way you can debug your projects over either wifi, usb, or both at the same time without changing the code. This has an interface identical to the `Serial` class (plus extras) to make things easier, but you can stil use `Serial` alongside it.
+Arduino library that allows you to print to both serial and MQTT at the same time. This way you can debug your projects over either wifi, usb, or both at the same time without changing the code. This has an interface identical to the `Serial` class (plus extras) to make things easier, but you can still use `Serial` alongside it.
+
+> Note: This library uses ArduinoMqttClient and support for PubSubClient and others is a WIP.
 
 # Installation
-You can download this repo as a .zip and import it into the Arduino IDE with the menu option `Sketch -> Include Library -> Add .zip Library`. You also need to install the official ArduinoMQTTClient library from the library manager.
+Install via the library manager in the Arduino IDE. `Tools -> Manage Libraries...`. Then search for "MQTT and Serial Printer".
 
 You also need an MQTT broker running somewhere on your network (like a raspberry pi). I recommend [mosquitto](https://mosquitto.org/).
 
