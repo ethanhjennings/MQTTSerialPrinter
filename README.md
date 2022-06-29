@@ -1,13 +1,13 @@
 
 # MQTT and Serial Printer
-Arduino library that allows you to print to both serial and MQTT at the same time. This way you can debug your projects over either wifi, usb, or both at the same time without changing the code. This has an interface identical to the `Serial` class (plus extras) to make things easier, but you can still use `Serial` alongside it.
+This is an Arduino library that allows you to print to both serial and MQTT at the same time. This way you can debug your projects over WiFi, USB, or both at the same time without changing the code. This has an interface identical to the `Serial` class (plus extras) to make things easier, but you can still use `Serial` alongside it.
 
-> Note: This library uses ArduinoMqttClient and support for PubSubClient and others is a WIP.
+> Note: This library uses `ArduinoMqttClient` and support for `PubSubClient` and others is a WIP.
 
 # Installation
-Install via the library manager in the Arduino IDE. `Tools -> Manage Libraries...`. Then search for "MQTT and Serial Printer".
+Install via the library manager in the Arduino IDE (`Tools -> Manage Libraries...`). Then search for "MQTT and Serial Printer".
 
-You also need an MQTT broker running somewhere on your network (like a raspberry pi). I recommend [mosquitto](https://mosquitto.org/).
+You also need an MQTT broker running somewhere on your network, like a raspberry pi. I recommend [mosquitto](https://mosquitto.org/).
 
 # Example Usage
 
@@ -49,7 +49,7 @@ Newline chars still work too!
 Log.println("This is a multi-line message!\nHere's another line!");
 ```
 
-There's also a formatting function based on strprintf!
+There's also a formatting function based on `sprintf`!
 ```c++
 Log.printlnf("Example formatting with data: %d", 42);
 ```
@@ -60,4 +60,4 @@ Log.setMQTTEnabled(false);
 ```
 
 # Contributing and future
-Right now this library only supports the official ArduinoMQTTClient, but I would like to support more. Feel free to open a pull request with support for other MQTT libraries. It ideally should support QoS 2 because any dropped or repeated messages make debugging more confusing.
+Right now this library only supports the official `ArduinoMQTTClient`, but I would like it to support more. Feel free to open a pull request with support for other MQTT libraries. It ideally should support QoS 2 because any dropped or repeated messages make debugging more confusing.
