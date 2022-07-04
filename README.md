@@ -2,23 +2,25 @@
 # MQTT and Serial Printer
 This is an Arduino library that allows you to print to both serial and MQTT at the same time. This way you can debug your projects over WiFi, USB, or both at the same time without changing the code. This has an interface identical to the `Serial` class (plus extras) to make things easier, but you can still use `Serial` alongside it.
 
-> Note: This library uses `ArduinoMqttClient` and support for `PubSubClient` and others is a WIP.
+> Note: This library works with either `PubSubClient` or `ArduinoMqttClient` and support for others is a WIP.
 
 # Installation
 Install via the library manager in the Arduino IDE (`Tools -> Manage Libraries...`). Then search for "MQTT and Serial Printer".
 
-You also need an MQTT broker running somewhere on your network, like a raspberry pi. I recommend [mosquitto](https://mosquitto.org/).
+You also need an MQTT library installed, right now `PubSubClient` and `ArduinoMqttClient` are supported.
+
+Lastly, you need MQTT broker running somewhere on your network, like a raspberry pi. I recommend [mosquitto](https://mosquitto.org/).
 
 # Example Usage
 
 Setup:
 ```c++
 #include <WiFi.h>
-#include <ArduinoMqttClient.h>
+#include <PubSubClient.h> // ArduinoMqttClient.h is also supported
 #include <MQTTSerialPrinter.h>
 
 WiFiClient wifi_client;
-MqttClient mqtt_client(wifi_client);
+PubSubClient mqtt_client(wifi_client);
 MQTTSerialPrinter Log(mqtt_client, "my_topic");
 
 // Serial printing now works, connect to wifi and mqtt for mqtt printing to also work. See the examples.
@@ -56,8 +58,15 @@ Log.printlnf("Example formatting with data: %d", 42);
 
 If you decide you're done debugging and don't want to send excess messages over the network anymore, you can simply disable MQTT printing without affecting serial printing with:
 ```c++
-Log.setMQTTEnabled(false);
+MQTTSerialPrinter Log(true /*serial enabled*/);
 ```
 
+You can also turn off serial and only log to MQTT with:
+```c++
+MQTTSerialPrinter Log(mqtt_client, "my_topic", false /*serial disabled*/);
+```
+
+You can also change this on the fly with `setMQTTEnabled` and `setSerialEnabled`.
+
 # Contributing and future
-Right now this library only supports the official `ArduinoMQTTClient`, but I would like it to support more. Feel free to open a pull request with support for other MQTT libraries. It ideally should support QoS 2 because any dropped or repeated messages make debugging more confusing.
+I would like it to support more MQTT libraries. Feel free to open a pull request with support for others or any bugfixes. It ideally should support QoS 2 publishing because any dropped or repeated messages make debugging more confusing, but most seem to only support 0 or 1.
