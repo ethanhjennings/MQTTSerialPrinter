@@ -9,16 +9,17 @@ class StringPrinter : public Print {
 
 private:
   uint8_t* _buff;
-  int _buff_index;
-  int _buff_size;
-	  
+  unsigned int _buff_index;
+  unsigned int _buff_size;
+
 public:
-  StringPrinter(int buff_size);
+  StringPrinter(unsigned int buff_size);
   ~StringPrinter();
-  char * get_buff(); // Returns a copy that needs to be freed
+
+  const uint8_t* get_buff();
   void reset();
   virtual size_t write(uint8_t c);
-  bool has_data() {return _buff_index > 0;}
+  unsigned int length();
 };
 
 #endif

@@ -4,26 +4,26 @@
 #include "MQTTSerialPrinter.h"
 #include "StringPrinter.h"
 
-MQTTSerialPrinter::MQTTSerialPrinter(bool serial, int buff_size)
+MQTTSerialPrinter::MQTTSerialPrinter(bool serial, unsigned int buff_size)
   : _mqtt_enabled(false), _serial_enabled(serial), _printer(buff_size) {}
 
 #ifdef PUBSUB
-  MQTTSerialPrinter::MQTTSerialPrinter(PubSubClient & mqtt_client, const char* topic, bool serial, int buff_size)
+  MQTTSerialPrinter::MQTTSerialPrinter(PubSubClient & mqtt_client, const char* topic, bool serial, unsigned int buff_size)
     : _pubsub_mqtt_client(&mqtt_client), _mqtt_enabled(true), _serial_enabled(serial), _printer(buff_size) {
     setMQTTTopic(topic);
   }
 
-  MQTTSerialPrinter::MQTTSerialPrinter(PubSubClient & mqtt_client, const String& topic, bool serial, int buff_size)
+  MQTTSerialPrinter::MQTTSerialPrinter(PubSubClient & mqtt_client, const String& topic, bool serial, unsigned int buff_size)
     : MQTTSerialPrinter(mqtt_client, topic.c_str(), serial, buff_size) {}
 #endif
 
 #ifdef ARDUINO_MQTT
-  MQTTSerialPrinter::MQTTSerialPrinter(MqttClient & mqtt_client, const char* topic, bool serial, int buff_size)
+  MQTTSerialPrinter::MQTTSerialPrinter(MqttClient & mqtt_client, const char* topic, bool serial, unsigned int buff_size)
     : _arduino_mqtt_client(&mqtt_client), _mqtt_enabled(true), _serial_enabled(serial), _printer(buff_size) {
     setMQTTTopic(topic);
   }
 
-  MQTTSerialPrinter::MQTTSerialPrinter(MqttClient & mqtt_client, const String& topic, bool serial, int buff_size)
+  MQTTSerialPrinter::MQTTSerialPrinter(MqttClient & mqtt_client, const String& topic, bool serial, unsigned int buff_size)
     : MQTTSerialPrinter(mqtt_client, topic.c_str(), serial, buff_size) {}
 #endif
 
@@ -58,21 +58,18 @@ void MQTTSerialPrinter::beginMessage() {
 }
 
 void MQTTSerialPrinter::endMessage() {
-  if (_printer.has_data()) {
-    char* buff = _printer.get_buff();
+  if (_printer.length() > 0) {
+    const uint8_t* buff = _printer.get_buff();
+    unsigned int length = _printer.length();
     _printer.reset();
 
     if (_mqtt_enabled) {
-      // Remove final newline since it isn't needed for MQTT
-      size_t buff_len = strlen(buff);
-      if (buff[buff_len-1] == '\n') {
-        buff[buff_len-1] = '\0';
+      if (buff[length-1] == '\n') {
+        // Ignore final newline since it will mess up MQTT formatting
+        length -= 1;
       }
-
-      _publish(buff);
+      _publish(buff, length);
     }
-
-    delete[] buff;
   }
   _send_on_newline = true;
 }
@@ -83,4 +80,19 @@ void MQTTSerialPrinter::_handle_newline() {
   if (_send_on_newline) {
     endMessage();
   }
+}
+
+void MQTTSerialPrinter::_publish(const uint8_t * buff, unsigned int length) {
+  #ifdef PUBSUB
+    if (_pubsub_mqtt_client != nullptr) {
+      _pubsub_mqtt_client->publish(_topic, buff, length);
+    }
+  #endif
+  #ifdef ARDUINO_MQTT
+    if (_arduino_mqtt_client != nullptr) {
+      _arduino_mqtt_client->beginMessage(_topic, length, false, QOS);
+      _arduino_mqtt_client->write(buff, length);
+      _arduino_mqtt_client->endMessage();
+    }
+  #endif
 }

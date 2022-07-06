@@ -4,17 +4,17 @@
 # Class
 ###################################################################
 
-MQTTSerialPrinter		KEYWORD1
+MQTTSerialPrinter           KEYWORD1
 
 ###################################################################
 # Methods and Functions
 ###################################################################
 
-beginMessage				KEYWORD2
-endMessage    				KEYWORD2
-setMQTTEnabled				KEYWORD2
-setMQTTTopic				KEYWORD2
-printlnf				    KEYWORD2
+beginMessage                KEYWORD2
+endMessage                  KEYWORD2
+setMQTTEnabled              KEYWORD2
+setMQTTTopic                KEYWORD2
+printlnf                    KEYWORD2
 
 ###################################################################
 # Constants

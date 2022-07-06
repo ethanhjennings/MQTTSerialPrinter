@@ -38,7 +38,7 @@ void setup_mqtt() {
 void setup() {
   Serial.begin(115200);
   delay(500);
-  
+
   setup_wifi();
   setup_mqtt();
 }
@@ -63,7 +63,7 @@ void loop() {
 
   // Extra formatting function for fun:
   Log.printlnf("Example string formatting with data: %d", 42);
-  
+
   // Keep the connection alive and recieve incoming data
   // (not strictly needed in this sample, but good practice)
   mqtt_client.loop();

@@ -21,7 +21,7 @@
   #error "You need to install either PubSubClient or ArduinoMqttClient for MQTTSerialPrinter.h to work"
 #endif
 
-#define DEFAULT_BUFF_SIZE 2048
+#define DEFAULT_BUFF_SIZE 256 // You can increase this by setting a bigger buff_size in the constructor
 
 class MQTTSerialPrinter {
 private:
@@ -38,42 +38,27 @@ private:
     MqttClient* _arduino_mqtt_client = nullptr;
   #endif
 
-  int _mqttClientLib;
   char* _topic = nullptr;
+  StringPrinter _printer;
   bool _mqtt_enabled;
   bool _serial_enabled;
-
   bool _send_on_newline = true;
-  StringPrinter _printer;
 
   void _handle_newline(); // Maybe send on newlines
 
-  void _publish(char * buff) {
-    #ifdef PUBSUB
-      if (_pubsub_mqtt_client != nullptr) {
-        _pubsub_mqtt_client->publish(_topic, buff);
-      }
-    #endif
-    #ifdef ARDUINO_MQTT
-      if (_arduino_mqtt_client != nullptr) {
-        _arduino_mqtt_client->beginMessage(_topic, false, QOS);
-        _arduino_mqtt_client->print(buff);
-        _arduino_mqtt_client->endMessage();
-      }
-    #endif
-  }
+  void _publish(const uint8_t * buff, unsigned int length);
 
 public:
-  MQTTSerialPrinter(bool serial=true, int buff_size=DEFAULT_BUFF_SIZE);
+  MQTTSerialPrinter(bool serial=true, unsigned int buff_size=DEFAULT_BUFF_SIZE);
 
   #ifdef PUBSUB
-    MQTTSerialPrinter(PubSubClient & mqtt_client, const char* topic, bool serial=true, int buff_size=DEFAULT_BUFF_SIZE);
-    MQTTSerialPrinter(PubSubClient & mqtt_client, const String& topic, bool serial=true, int buff_size=DEFAULT_BUFF_SIZE);
+    MQTTSerialPrinter(PubSubClient & mqtt_client, const char* topic, bool serial=true, unsigned int buff_size=DEFAULT_BUFF_SIZE);
+    MQTTSerialPrinter(PubSubClient & mqtt_client, const String& topic, bool serial=true, unsigned int buff_size=DEFAULT_BUFF_SIZE);
   #endif
 
   #ifdef ARDUINO_MQTT
-    MQTTSerialPrinter(MqttClient & mqtt_client, const char* topic, bool serial=true, int buff_size=DEFAULT_BUFF_SIZE);
-    MQTTSerialPrinter(MqttClient & mqtt_client, const String& topic, bool serial=true, int buff_size=DEFAULT_BUFF_SIZE);
+    MQTTSerialPrinter(MqttClient & mqtt_client, const char* topic, bool serial=true, unsigned int buff_size=DEFAULT_BUFF_SIZE);
+    MQTTSerialPrinter(MqttClient & mqtt_client, const String& topic, bool serial=true, unsigned int buff_size=DEFAULT_BUFF_SIZE);
   #endif
 
   ~MQTTSerialPrinter();
